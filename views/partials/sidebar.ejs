@@ -1,0 +1,66 @@
+<div class="sidebar">
+	<div class="sidebar__categories">
+		<div class="sidebar__category">
+			<i class="material-icons">home</i>
+			<span>Home</span>
+		</div>
+
+		<% if(!isAuthenticated) { %>
+			<div class="sidebar__category">
+			<i class="material-icons">local_fire_department</i>
+			<span>
+				<a href="/auth/register">Register</a>
+			</span>
+		</div>
+
+		<div class="sidebar__category">
+			<i class="material-icons">subscriptions</i>
+			<span>
+				<a href="/auth/login">Login</a>
+			</span>
+		</div>
+		<% } else { %>
+
+		<div class="sidebar__category">
+			<i class="material-icons">local_fire_department</i>
+			<span>
+				<a href="/user/profile">My Profile</a>
+			</span>
+		</div>
+
+		<div class="sidebar__category">
+			<i class="material-icons">subscriptions</i>
+			<span>
+				<a href="/video/create">Create Video</a>
+			</span>
+		</div>
+
+		<div class="sidebar__category">
+			<i class="material-icons">library_add_check</i>
+			<span>Library</span>
+		</div>
+
+		<div class="sidebar__category">
+			<i class="material-icons">history</i>
+			<span>History</span>
+		</div>
+
+		<div class="sidebar__category">
+			<i class="material-icons">play_arrow</i>
+			<span>Your Videos</span>
+		</div>
+
+		<div class="sidebar__category">
+			<i class="material-icons">watch_later</i>
+			<span>Watch Later</span>
+		</div>
+
+		<div class="sidebar__category">
+			<i class="material-icons">thumb_up</i>
+			<span>Liked videos</span>
+		</div>
+		<% } %>
+	</div>
+	<hr />
+</div>
+<!-- End of Sidebar -->

@@ -1,0 +1,21 @@
+<%- include('../partials/head') -%>
+
+<div class="form-flex">
+	<div class="container-form login-form">
+		<%- include('../partials/messages') -%>
+		<div class="heading">
+			<h1>Login to WAAWTube</h1>
+		</div>
+		<form action="/auth/login" method="post" class="login">
+			<label for="value">Email or Username</label>
+			<input type="text" name="value" id="value" placeholder="Email or Username" />
+			<label for="password">Password</label>
+			<input type="password" name="password" id="password" placeholder="Password6+ characters" />
+			<input type="submit" value="Login" />
+		</form>
+		<p>Forgot password? &nbsp; <a href="/auth/forgot-password">Reset Password</a></p>
+		<p>Don't have an account? &nbsp; <a href="/auth/register">Signup</a></p>
+	</div>
+</div>
+
+<%- include('../partials/foot') -%>

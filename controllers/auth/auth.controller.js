@@ -1,72 +1,110 @@
-const User = require("../../models/User.model");
-const passport = require("passport");
+const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
-const randomstring = require('randomstring');
-const verifyEmail = require('../../utils/verifyEmail');
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const verifyEmail = require("../../utils/verifyEmail");
+const randomstring = require("randomstring");
+
+//Local Strategy with Passport
+passport.use(
+	new LocalStrategy(
+		{
+			usernameField: "value",
+			passReqToCallback: true,
+		},
+		async (req, value, password, done) => {
+			await User.findOne({ $or: [{ username: value }, { email: value }] }).then(
+				async (user) => {
+					if (!user)
+						return done(null, false, req.flash("error-message", "user not found"));
+					await bcrypt.compare(password, user.password, (err, passwordMatch) => {
+						if (err) return done(err);
+
+						if (!passwordMatch)
+							return done(null, false, req.flash("error-message", "Invalid Password"));
+
+						return done(
+							null,
+							user,
+							req.flash("success-message", "Login successfull"),
+						);
+					});
+				},
+			);
+		},
+	),
+);
+
+// Needed for login
+passport.serializeUser(function (user, done) {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+	User.findById(id, function (err, user) {
+		done(err, user);
+	});
+});
 
 module.exports = {
 	register: async (req, res) => {
-		let pageTitle = "Register page";
-		res.render("auth/register", { pageTitle });
+		res.render("auth/register", { pageTitle: "Register" });
 	},
 
 	login: async (req, res) => {
-		let pageTitle = "Login page";
-		res.render("auth/login", { pageTitle });
+		res.render("auth/login", { pageTitle: "Login" });
 	},
 
 	postRegister: async (req, res) => {
 		try {
 			let { username, email, password, confirmPassword } = req.body;
 
-			console.log(req.body);
+			if (password.length < 6) {
+				req.flash("error-message", "Password should be 6 or characters");
+				return res.redirect("back");
+			}
 
 			if (password !== confirmPassword) {
 				req.flash("error-message", "Passwords do not match");
 				return res.redirect("back");
 			}
 
-			let userExists = await User.findOne({ username });
-			let emailExists = await User.findOne({ email });
+			let userExists = await User.findOne({ email: email });
+			let nameExists = await User.findOne({ username: username });
 
 			if (userExists) {
-				req.flash("error-message", "Username aleady exist!");
+				req.flash("error-message", "Email already exist!!");
 				return res.redirect("back");
 			}
 
-			if (emailExists) {
-				req.flash("error-message", "Email aleady exist!");
+			if (nameExists) {
+				req.flash("error-message", "Username already exist!!");
 				return res.redirect("back");
 			}
 
-			if (password.length < 6) {
-				req.flash("error-message", "Password must be six characters or more");
-				return res.redirect("back");
-			}
-
+			//Hash Password
 			const salt = await bcrypt.genSalt();
 			const hashedPassword = await bcrypt.hash(password, salt);
-         const secretToken = randomstring.generate();
 
-			const newUser = new User({
-				username,
-            email,
-            secretToken,
+			const secretToken = randomstring.generate();
+
+			let newUser = new User({
+				username: username,
+				secretToken: secretToken,
+				email: email,
 				password: hashedPassword,
-         });
-         
-         await newUser.save();
-
-         await verifyEmail(req, username, email, secretToken);
+			});
+			// Send Email with Nodemailer
+			await verifyEmail(req, username, email, secretToken);
 
 			if (!newUser) {
-				req.flash("error-message", "An error occurred while registering user");
+				req.flash("error-message", "Something Went Wrong, Please try again");
 				return res.redirect("back");
 			}
 
 			req.flash(
 				"success-message",
-				"User registration successful, Check your email to verify your account",
+				"Account Created Successfully!!, Please check your email to verify your account",
 			);
 			return res.redirect("/auth/login");
 		} catch (err) {
@@ -75,17 +113,12 @@ module.exports = {
 	},
 
 	postLogin: passport.authenticate("local", {
-			successRedirect: "/",
-			failureRedirect: "/auth/login",
-			failureFlash: true,
-			successFlash: true,
-			session: true,
-		}),
+		successRedirect: "/",
+		failureRedirect: "/auth/login",
+		failureFlash: true,
+		successFlash: true,
+		session: true,
+	}),
 
-	forgotPassword: async (req, res) => {
-		let pageTitle = "Password reset";
-		res.render("auth/forgot-password", { pageTitle });
-	},
-
-	postForgotPassword: async (req, res) => {},
+	forgotPassword: async (req, res) => {},
 };

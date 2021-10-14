@@ -11,12 +11,13 @@ hide.forEach((el) =>
 );
 
 const fadeOut = () => {
-   flashCard.forEach((card) => card.classList.add("fadeEffect"));
-}
+	flashCard.forEach((card) => card.classList.add("fadeEffect"));
+};
 
 fadeOut();
 
-const autoClose = () => setInterval(() => {
+const autoClose = () =>
+	setInterval(() => {
 		flashCard.forEach((el) => (el.style.display = "none"));
 	}, 7000);
 

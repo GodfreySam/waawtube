@@ -1,30 +1,37 @@
-<%- include('../partials/head') -%>
+<%- include('../partials/head')-%>
 
-<div class="form-flex">
-	<div class="container-form login-form">
-		<%- include('../partials/messages') -%>
-		<div class="heading">
-			<h1>Create a Video</h1>
-		</div>
-		<form action="/video/create" method="post" enctype="multipart/form-data">
-			<label for="title">Video Title</label>
-			<input type="text" name="title" id="value" placeholder="Enter video title" />
+<div class="login-container">
+    <div class="login-content">
+        <h3>Create a Video</h3>
+        <%- include('../messages') -%>
+        <form action="/video/create" method="POST" enctype="multipart/form-data">
+            <div class="inputBox">
+                <label for="">Video Title</label>
+                <input type="text" name="title" id=""  required>
+            </div>
+            <div class="inputBox">
+                <label for="image">Image Upload</label>
+                <input type="file" accept="image/*" name="image" id="image" required>
+            </div>
+            <div class="inputBox">
+                <label for="video">Video Upload</label>
+                <input type="file" accept="video/*" name="video" id="video" required>
+            </div>
 
-			<label for="image">Upload Image</label>
-			<input type="file" accept="image/*" name="image" id="image" required />
+            <div class="inputBox">
+                <label for="">Description</label><br>
+                <textarea name="description" id="" cols="30" rows="10"></textarea>
+           </div>
+            
+            
+                <button class="button" type="submit">SUBMIT</button>
 
-			<label for="video"></label>
-			<input type="file" accept="video/*" name="video" id="video" required />
+                <p>Don't Have Account?<a href="/auth/register">Sign Up</a></p>
 
-			<label for="password">Description</label>
-			<textarea name="" id="" cols="30" rows="10"></textarea>
-			<input type="submit" value="Login" />
-		</form>
-		<p>
-			Forgot password? &nbsp; <a href="/auth/forgot-password">Reset Password</a>
-		</p>
-		<p>Don't have an account? &nbsp; <a href="/auth/register">Signup</a></p>
-	</div>
+        
+        </form>
+    </div>
 </div>
+
 
 <%- include('../partials/foot') -%>

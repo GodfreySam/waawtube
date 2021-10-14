@@ -1,12 +1,10 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const {
-	create,
-	postCreate,
-} = require("../../controllers/video/video.controller");
-
+const {create, postCreate, postUpload} = require('../../controllers/video/video.controller');
 const authorized = require('../../config/authorization').isLoggedIn;
 
-router.get("/create").get(create).post(authorized, postCreate);
+router.route('/create')
+    .get(create)
+    .post(authorized, postUpload, postCreate);
 
 module.exports = router;

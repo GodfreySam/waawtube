@@ -1,23 +1,24 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 const transport = nodemailer.createTransport({
-	service: "Gmail",
-	auth: {
-		pass: process.env.pass,
-		user: process.env.user,
-	},
-	tls: {
-		rejectUnauthorized: false,
-	},
+    service: 'Gmail',
+    auth:{
+        pass: process.env.EMAIL,
+        user: process.env.PASS,
+    },
+    tls:{
+        rejectUnauthorized: false,
+    }
 });
 
-function sendEmail(from, to, subject, html) {
-	return new Promise((resolve, reject) => {
-		transport.sendMail({ from, subject, to, html }, (err, info) => {
-			if (err) reject(err);
-			resolve(info);
-		});
-	});
+function sendEmail(from, to, subject, html){
+    return new Promise((resolve, reject)=>{
+        transport.sendMail({from, subject, to, html}, (err, info) =>{
+            if(err) reject(err);
+            resolve(info);
+        });
+    });
 }
 
 module.exports = sendEmail;
+
